@@ -1,7 +1,7 @@
 <?php
 ob_start();
-define('API_KEY','token');
-$admin = "159887854";
+define('API_KEY','285389338:AAE8raed53_vYA3PRtjGkqd8_gAJYF_QPFg');
+$admin = "270038818";
 function bot($method,$datas=[]){
     $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $ch = curl_init();
@@ -20,6 +20,8 @@ $message = $update->message;
 $editm = $update->edited_message;
 $mid = $message->message_id;
 $chat_id = $message->chat->id;
+$help= file_get_contents("help.txt");
+$creator= file_get_contents("creator.txt");
 $text1 = $message->text;
 $fadmin = $message->from->id;
 $file_o = __DIR__.'/users/'.$mid.'.json';
@@ -45,7 +47,7 @@ if (isset($update->edited_message)){
   //$up = file_get_contents(__DIR__.'/users/'.$eid.'.json');
   //str_replace("edited_message","message",$up);
 }elseif(preg_match('/^\/([Ss]tart)/',$text1)){
-  $text = "به ربات ادیت نکن\nخوش آمدید\nبرای اد کردن من به گروه بر روی لینک زیر بزنید\nhttps://telegram.me/DontEdit_BOT?startgroup=new";
+  $text = "به ربات ادیت نکن\nخوش آمدید";
   bot('sendmessage',[
     'chat_id'=>$chat_id,
     'text'=>$text,
@@ -53,10 +55,16 @@ if (isset($update->edited_message)){
     'reply_markup'=>json_encode([
       'inline_keyboard'=>[
         [
-          ['text'=>'سازنده','url'=>'https://telegram.me/alireza_PT']
+          ['text'=>'درمورد ربات','callback_data'=>'help']
         ],
         [
-          ['text'=>'کانال-ربات','url'=>'https://telegram.me/create_antispam_bot']
+          ['text'=>'منو ببر گروهت','url'=>'https://telegram.me/testbot?startgroup=new']
+        ],
+        [
+          ['text'=>'ارتباط با سازنده','callback_data'=>'creator']
+        ],
+        [
+          ['text'=>'کانال-ربات','url'=>'https://telegram.me/TELEBOOMBANG_TG']
         ]
       ]
     ])
@@ -70,19 +78,85 @@ if (isset($update->edited_message)){
       'text'=>"کاربران : $mmemcount 👤 "
     ]);
 
+}elseif(preg_match('/^\/([Hh]elp)/',$text)){
+coding('sendMessage',[
+    'chat_id'=>$chat_id,
+    'text'=>$help,
+    'parse_mode'=>'html'
+  ]);
+}elseif ($data == "help") {
+  coding('editMessagetext',[
+    'chat_id'=>$chatid,
+	'message_id'=>$message_id,
+    'text'=>$help,
+    'parse_mode'=>'html',
+   'reply_markup'=>json_encode([
+      'inline_keyboard'=>[
+        [
+ 	         ['text'=>' برگشت 🔙','callback_data'=>'back']
+        ]
+        ]
+    ])
+  ]);
+ }elseif(preg_match('/^\/([Cc]reator)/',$text)){
+coding('sendMessage',[
+    'chat_id'=>$chat_id,
+    'text'=>$creator,
+    'parse_mode'=>'html'
+  ]);
+}elseif ($data == "creator") {
+  coding('editMessagetext',[
+    'chat_id'=>$chatid,
+	'message_id'=>$message_id,
+    'text'=>$creator,
+    'parse_mode'=>'html',
+   'reply_markup'=>json_encode([
+      'inline_keyboard'=>[
+        [
+          ['text'=>'سازنده','url'=>'https://telegram.me/A_R_M_i_N_L_U_A']
+        ],
+        [
+	          ['text'=>' برگشت 🔙','callback_data'=>'back']
+        ]
+        ]
+    ])
+  ]);
+}elseif ($data == "back") {
+  coding('editMessagetext',[
+    'chat_id'=>$chatid,
+	'message_id'=>$message_id,
+    'text'=>"Backed!",
+    'parse_mode'=>'html',
+   'reply_markup'=>json_encode([
+     'inline_keyboard'=>[
+        [
+          ['text'=>'درمورد ربات','callback_data'=>'help']
+        ],
+        [
+          ['text'=>'منو ببر گروهت','url'=>'https://telegram.me/testbot?startgroup=new']
+        ],
+        [
+          ['text'=>'ارتباط با سازنده','callback_data'=>'creator']
+        ],
+        [
+          ['text'=>'کانال-ربات','url'=>'https://telegram.me/TELEBOOMBANG_TG']
+        ]
+      ]
+    ])
+  ]);
 }elseif(isset($update->message-> new_chat_member )){
 bot('sendMessage',[
       'chat_id'=>$chat_id,
       'text'=>"به گروه خوش آمدید "
     ]);
 }
-  
-  
-  
-  
-  
-  
-  
+  
+  
+  
+  
+  
+  
+  
 $txxt = file_get_contents('member.txt');
     $pmembersid= explode("\n",$txxt);
     if (!in_array($chat_id,$pmembersid)){
@@ -90,3 +164,4 @@ $txxt = file_get_contents('member.txt');
       $aaddd .= $chat_id."\n";
       file_put_contents('member.txt',$aaddd);
     }
+  }
